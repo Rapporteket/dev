@@ -1,4 +1,4 @@
-FROM rocker/verse:latest
+FROM rocker/verse:4.0.5
 
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 
