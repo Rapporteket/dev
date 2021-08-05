@@ -55,12 +55,12 @@ ENV R_RAP_CONFIG_PATH=${CONFIG_PATH}
 RUN mkdir -p ${CONFIG_PATH}
 RUN chmod ugo+rwx ${CONFIG_PATH}
 
-RUN touch /home/rstudio/.Renviron
-RUN echo "TZ=${TZ}" > /home/rstudio/.Renviron
-RUN echo "http_proxy=${PROXY}" >> /home/rstudio/.Renviron
-RUN echo "https_proxy=${PROXY}" >> /home/rstudio/.Renviron
-RUN echo "R_RAP_INSTANCE=${INSTANCE}" >> /home/rstudio/.Renviron
-RUN echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/rstudio/.Renviron
+RUN touch /home/rstudio/.Renviron \
+    && echo "TZ=${TZ}" > /home/rstudio/.Renviron \
+    && echo "http_proxy=${PROXY}" >> /home/rstudio/.Renviron \
+    && echo "https_proxy=${PROXY}" >> /home/rstudio/.Renviron \
+    && echo "R_RAP_INSTANCE=${INSTANCE}" >> /home/rstudio/.Renviron \
+    && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/rstudio/.Renviron
 
 # add rstudio user to root group  and enable shiny server
 ENV ROOT=TRUE
@@ -70,18 +70,18 @@ ENV ROOT=TRUE
 RUN /rocker_scripts/install_shiny_server.sh
 
 # our own touch to shiny-server
-RUN rm /srv/shiny-server/index.html
-RUN rm -rf /srv/shiny-server/sample-apps
-RUN usermod -a -G staff,rstudio shiny
+RUN rm /srv/shiny-server/index.html \
+    && rm -rf /srv/shiny-server/sample-apps \
+    && usermod -a -G staff,rstudio shiny
 ADD --chown=root:root rapShinyApps.tar.gz /srv/shiny-server/
 
 ## provide user shiny with corresponding environmental settings
-RUN touch /home/shiny/.Renviron
-RUN echo "TZ=${TZ}" > /home/shiny/.Renviron
-RUN echo "http_proxy=${PROXY}" >> /home/shiny/.Renviron
-RUN echo "https_proxy=${PROXY}" >> /home/shiny/.Renviron
-RUN echo "R_RAP_INSTANCE=${INSTANCE}" >> /home/shiny/.Renviron
-RUN echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/shiny/.Renviron
+RUN touch /home/shiny/.Renviron \
+    && echo "TZ=${TZ}" > /home/shiny/.Renviron \
+    && echo "http_proxy=${PROXY}" >> /home/shiny/.Renviron \
+    && echo "https_proxy=${PROXY}" >> /home/shiny/.Renviron \
+    && echo "R_RAP_INSTANCE=${INSTANCE}" >> /home/shiny/.Renviron \
+    && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/shiny/.Renviron
 
 # basic R functionality
 RUN R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https://cloud.r-project.org/')"
@@ -92,9 +92,9 @@ USER rstudio
 RUN R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))"
 USER root
 
-# tinytex maybe not so fully automtaic...
+# tinytex maybe not so fully automatic...
 RUN usermod -a -G staff,rstudio shiny
 USER shiny
 RUN R -e "tinytex::tlmgr_install('collection-langeuropean')"
 
-USER root
+USER rstudio
