@@ -89,13 +89,7 @@ RUN R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https:/
 
 # Install base Rapporteket packages in R, deploy template config and empty log files
 RUN R -e "remotes::install_github(c('Rapporteket/rapbase@*release'))"
-USER rstudio
 RUN R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))"
-USER root
-
+RUN chown rstudio:rstudio ${CONFIG_PATH}/*
 # tinytex maybe not so fully automatic...
-RUN usermod -a -G staff,rstudio shiny
-USER shiny
 RUN R -e "tinytex::tlmgr_install('collection-langeuropean')"
-
-USER rstudio
