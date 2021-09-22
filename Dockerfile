@@ -51,17 +51,29 @@ ENV https_proxy=${PROXY}
 ARG INSTANCE=DEV
 ENV R_RAP_INSTANCE=${INSTANCE}
 
+ARG DB_HOST=db
+ENV DB_HOST=${DB_HOST}
+
+ARG DB_USER=root
+ENV DB_USER=${DB_USER}
+
+ARG DB_PASS=root
+ENV DB_PASS=${DB_PASS}
+
 ARG CONFIG_PATH=/home/rstudio/rap_config
 ENV R_RAP_CONFIG_PATH=${CONFIG_PATH}
-RUN mkdir -p ${CONFIG_PATH}
-RUN chmod ugo+rwx ${CONFIG_PATH}
+RUN mkdir -p ${CONFIG_PATH} \
+    && chmod ugo+rwx ${CONFIG_PATH}
 
 RUN touch /home/rstudio/.Renviron \
     && echo "TZ=${TZ}" > /home/rstudio/.Renviron \
     && echo "http_proxy=${PROXY}" >> /home/rstudio/.Renviron \
     && echo "https_proxy=${PROXY}" >> /home/rstudio/.Renviron \
     && echo "R_RAP_INSTANCE=${INSTANCE}" >> /home/rstudio/.Renviron \
-    && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/rstudio/.Renviron
+    && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/rstudio/.Renviron \
+    && echo "DB_HOST=${DB_HOST}" >> /home/rstudio/.Renviron \
+    && echo "DB_USER=${DB_USER}" >> /home/rstudio/.Renviron \
+    && echo "DB_PASS=${DB_PASS}" >> /home/rstudio/.Renviron
 
 # add rstudio user to root group  and enable shiny server
 ENV ROOT=TRUE
@@ -82,7 +94,10 @@ RUN touch /home/shiny/.Renviron \
     && echo "http_proxy=${PROXY}" >> /home/shiny/.Renviron \
     && echo "https_proxy=${PROXY}" >> /home/shiny/.Renviron \
     && echo "R_RAP_INSTANCE=${INSTANCE}" >> /home/shiny/.Renviron \
-    && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/shiny/.Renviron
+    && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/shiny/.Renviron \
+    && echo "DB_HOST=${DB_HOST}" >> /home/shiny/.Renviron \
+    && echo "DB_USER=${DB_USER}" >> /home/shiny/.Renviron \
+    && echo "DB_PASS=${DB_PASS}" >> /home/shiny/.Renviron
 
 # basic R functionality
 RUN R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https://cloud.r-project.org/')"
