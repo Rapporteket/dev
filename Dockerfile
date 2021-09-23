@@ -1,4 +1,6 @@
-FROM rocker/verse:4.0.5
+FROM rocker/verse:4.1
+#FROM rocker/verse:4.0.5
+
 
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 
@@ -25,6 +27,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libmariadb-dev \
     libmariadbclient-dev \
+    texlive-base \
+    texlive-binaries \
+    texlive-latex-base \
+    texlive-latex-recommended \
+    texlive-pictures \
     texlive-latex-extra \
     libharfbuzz-dev \
     libfribidi-dev \
@@ -104,8 +111,12 @@ RUN R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https:/
 
 # Install base Rapporteket packages in R, deploy template config and empty log files
 RUN R -e "remotes::install_github(c('Rapporteket/rapbase@*release'))"
+#RUN R -e "remotes::install_github(c('Rapporteket/rapbase'))"
 RUN R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))"
 RUN chown rstudio:rstudio ${CONFIG_PATH}/* \
     && chmod ug+rw ${CONFIG_PATH}/*
-# tinytex maybe not so fully automatic...
+# tinytex
+RUN R -e "tinytex::install_tinytex()"
+RUN R -e "tinytex::tlmgr_install('hyphen-norwegian')"
 RUN R -e "tinytex::tlmgr_install('collection-langeuropean')"
+
