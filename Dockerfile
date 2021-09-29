@@ -132,6 +132,7 @@ RUN su - rstudio bash -c 'R -e \
                                 \"lastpage\",\
                                 \"textpos\",\
                                 \"titlesec\",\
-                                \"framed\"))"'
+                                \"framed\",\
+                                \"ragged2e\"))"'
 RUN ln -s /home/rstudio/.TinyTeX /home/shiny/.TinyTeX
 
