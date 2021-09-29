@@ -27,12 +27,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libmariadb-dev \
     libmariadbclient-dev \
-    texlive-base \
-    texlive-binaries \
-    texlive-latex-base \
-    texlive-latex-recommended \
-    texlive-pictures \
-    texlive-latex-extra \
+    #texlive-base \
+    #texlive-binaries \
+    #texlive-latex-base \
+    #texlive-latex-recommended \
+    #texlive-pictures \
+    #texlive-latex-extra \
     libharfbuzz-dev \
     libfribidi-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -116,7 +116,22 @@ RUN R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoRepo
 RUN chown rstudio:rstudio ${CONFIG_PATH}/* \
     && chmod ug+rw ${CONFIG_PATH}/*
 # tinytex
-RUN R -e "tinytex::install_tinytex()"
-RUN R -e "tinytex::tlmgr_install('hyphen-norwegian')"
-RUN R -e "tinytex::tlmgr_install('collection-langeuropean')"
+RUN su - rstudio bash -c 'R -e "tinytex::install_tinytex()"'
+RUN su - rstudio bash -c 'R -e \
+      "tinytex::tlmgr_install(c(\"hyphen-norwegian\",\
+                                \"collection-langeuropean\",\
+                                \"datetime\",\
+                                \"fmtcount\",\
+                                \"sectsty\",\
+                                \"marginnote\",\
+                                \"babel-norsk\",\
+                                \"lato\",\
+                                \"fontaxes\",\
+                                \"caption\",\
+                                \"fancyhdr\",\
+                                \"lastpage\",\
+                                \"textpos\",\
+                                \"titlesec\",\
+                                \"framed\"))"'
+RUN ln -s /home/rstudio/.TinyTeX /home/shiny/.TinyTeX
 
