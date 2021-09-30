@@ -133,6 +133,13 @@ RUN su - rstudio bash -c 'R -e \
                                 \"textpos\",\
                                 \"titlesec\",\
                                 \"framed\",\
-                                \"ragged2e\"))"'
+                                \"ragged2e\",\
+                                \"ucs\",\
+                                \"subfig\",\
+                                \"eso-pic\",\
+                                \"grfext\",\
+                                \"oberdiek\",\
+                                \"pdfpages\",\
+                                \"pdflscape\"))"'
 RUN ln -s /home/rstudio/.TinyTeX /home/shiny/.TinyTeX
 
