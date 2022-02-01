@@ -51,6 +51,9 @@ ENV TZ=${TZ}
 # making proxy def (and other env vars) go all the way into Rstudio
 # console, based on
 # https://github.com/rocker-org/rocker-versioned/issues/91
+ARG USERID=
+ENV USERID=${USERID}
+
 ARG PROXY=
 ENV http_proxy=${PROXY}
 ENV https_proxy=${PROXY}
