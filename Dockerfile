@@ -1,6 +1,4 @@
 FROM rocker/verse:4.1
-#FROM rocker/verse:4.0.5
-
 
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 
@@ -27,12 +25,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libmariadb-dev \
     libmariadbclient-dev \
-    #texlive-base \
-    #texlive-binaries \
-    #texlive-latex-base \
-    #texlive-latex-recommended \
-    #texlive-pictures \
-    #texlive-latex-extra \
     libharfbuzz-dev \
     libfribidi-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -95,7 +87,6 @@ RUN /rocker_scripts/install_shiny_server.sh
 # our own touch to shiny-server
 RUN rm /srv/shiny-server/index.html \
     && rm -rf /srv/shiny-server/sample-apps
-    #&& usermod -a -G staff,rstudio shiny
 ADD --chown=root:root rapShinyApps.tar.gz /srv/shiny-server/
 
 ## provide user shiny with corresponding environmental settings
