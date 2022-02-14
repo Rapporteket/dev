@@ -94,8 +94,8 @@ RUN /rocker_scripts/install_shiny_server.sh
 
 # our own touch to shiny-server
 RUN rm /srv/shiny-server/index.html \
-    && rm -rf /srv/shiny-server/sample-apps \
-    && usermod -a -G staff,rstudio shiny
+    && rm -rf /srv/shiny-server/sample-apps
+    #&& usermod -a -G staff,rstudio shiny
 ADD --chown=root:root rapShinyApps.tar.gz /srv/shiny-server/
 
 ## provide user shiny with corresponding environmental settings
