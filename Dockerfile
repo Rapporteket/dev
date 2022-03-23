@@ -3,7 +3,11 @@ FROM rocker/verse:4.1
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV LC_TIME nb_NO.UTF-8
+# init locale settings
+#ENV LANGUAGE="en_US.UTF-8"
+#ENV LC_ALL="en_US.UTF-8"
+#ENV LC_TIME="en_US.UTF-8"
+#ENV LANG="en_US.UTF-8"
 
 # system libraries of general use
 # hadolint ignore=DL3008
@@ -36,6 +40,7 @@ RUN locale-gen nb_NO.UTF-8
 # System locales
 ENV LANG=nb_NO.UTF-8
 ENV LC_ALL=nb_NO.UTF-8
+ENV LC_TIME nb_NO.UTF-8
 RUN echo "LANG=\"nb_NO.UTF-8\"" > /etc/default/locale
 ARG TZ=Europe/Oslo
 ENV TZ=${TZ}
