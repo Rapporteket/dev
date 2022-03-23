@@ -66,6 +66,18 @@ ENV R_RAP_CONFIG_PATH=${CONFIG_PATH}
 RUN mkdir -p ${CONFIG_PATH} \
     && chmod ugo+rwx ${CONFIG_PATH}
 
+# add rstudio user to root group  and enable shiny server
+ENV ROOT=TRUE
+## for R v 3.x.x
+#RUN export ADD=shiny && bash /etc/cont-init.d/add
+## for R v >= 4.0.0
+RUN /rocker_scripts/install_shiny_server.sh \
+    && rm /srv/shiny-server/index.html \
+    && rm -rf /srv/shiny-server/sample-apps
+
+ADD --chown=root:root rapShinyApps.tar.gz /srv/shiny-server/
+
+## provide users rstudio and shiny with corresponding environmental settings, install and config
 RUN touch /home/rstudio/.Renviron \
     && echo "TZ=${TZ}" > /home/rstudio/.Renviron \
     && echo "http_proxy=${PROXY}" >> /home/rstudio/.Renviron \
@@ -74,22 +86,8 @@ RUN touch /home/rstudio/.Renviron \
     && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/rstudio/.Renviron \
     && echo "DB_HOST=${DB_HOST}" >> /home/rstudio/.Renviron \
     && echo "DB_USER=${DB_USER}" >> /home/rstudio/.Renviron \
-    && echo "DB_PASS=${DB_PASS}" >> /home/rstudio/.Renviron
-
-# add rstudio user to root group  and enable shiny server
-ENV ROOT=TRUE
-## for R v 3.x.x
-#RUN export ADD=shiny && bash /etc/cont-init.d/add
-## for R v >= 4.0.0
-RUN /rocker_scripts/install_shiny_server.sh
-
-# our own touch to shiny-server
-RUN rm /srv/shiny-server/index.html \
-    && rm -rf /srv/shiny-server/sample-apps
-ADD --chown=root:root rapShinyApps.tar.gz /srv/shiny-server/
-
-## provide user shiny with corresponding environmental settings
-RUN touch /home/shiny/.Renviron \
+    && echo "DB_PASS=${DB_PASS}" >> /home/rstudio/.Renviron \
+    && touch /home/shiny/.Renviron \
     && echo "TZ=${TZ}" > /home/shiny/.Renviron \
     && echo "http_proxy=${PROXY}" >> /home/shiny/.Renviron \
     && echo "https_proxy=${PROXY}" >> /home/shiny/.Renviron \
@@ -97,21 +95,16 @@ RUN touch /home/shiny/.Renviron \
     && echo "R_RAP_CONFIG_PATH=${CONFIG_PATH}" >> /home/shiny/.Renviron \
     && echo "DB_HOST=${DB_HOST}" >> /home/shiny/.Renviron \
     && echo "DB_USER=${DB_USER}" >> /home/shiny/.Renviron \
-    && echo "DB_PASS=${DB_PASS}" >> /home/shiny/.Renviron
-
-# basic R functionality
-RUN R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https://cloud.r-project.org/')"
-
-# Install base Rapporteket packages in R, deploy template config and empty log files
-RUN R -e "remotes::install_github(c('Rapporteket/rapbase@*release'))"
-RUN R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))"
-RUN touch ${CONFIG_PATH}/appLog.csv \
+    && echo "DB_PASS=${DB_PASS}" >> /home/shiny/.Renviron \
+    && R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https://cloud.r-project.org/')" \
+    && R -e "remotes::install_github(c('Rapporteket/rapbase@*release'))" \
+    && R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))" \
+    && touch ${CONFIG_PATH}/appLog.csv \
     && touch ${CONFIG_PATH}/reportLog.csv \
     && chown rstudio:rstudio ${CONFIG_PATH}/* \
-    && chmod ugo+rw ${CONFIG_PATH}/*
-# tinytex
-RUN su - rstudio bash -c 'R -e "tinytex::install_tinytex()"'
-RUN su - rstudio bash -c 'R -e \
+    && chmod ugo+rw ${CONFIG_PATH}/* \
+    && su - rstudio bash -c 'R -e "tinytex::install_tinytex()"' \
+    && su - rstudio bash -c 'R -e \
       "tinytex::tlmgr_install(c(\"hyphen-norwegian\",\
                                 \"collection-langeuropean\",\
                                 \"datetime\",\
@@ -134,6 +127,6 @@ RUN su - rstudio bash -c 'R -e \
                                 \"grfext\",\
                                 \"oberdiek\",\
                                 \"pdfpages\",\
-                                \"pdflscape\"))"'
-RUN ln -s /home/rstudio/.TinyTeX /home/shiny/.TinyTeX
+                                \"pdflscape\"))"' \
+    && ln -s /home/rstudio/.TinyTeX /home/shiny/.TinyTeX
 
