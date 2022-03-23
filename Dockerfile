@@ -37,8 +37,7 @@ ENV LANG=nb_NO.UTF-8
 ENV LC_ALL=nb_NO.UTF-8
 ENV LC_TIME nb_NO.UTF-8
 RUN echo "LANG=\"nb_NO.UTF-8\"" > /etc/default/locale
-ARG TZ=Europe/Oslo
-ENV TZ=${TZ}
+ENV TZ=Europe/Oslo
 
 # making proxy def (and other env vars) go all the way into Rstudio
 # console, based on
