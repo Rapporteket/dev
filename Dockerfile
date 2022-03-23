@@ -3,11 +3,6 @@ FROM rocker/verse:4.1
 LABEL maintainer "Are Edvardsen <are.edvardsen@helse-nord.no>"
 
 ENV DEBIAN_FRONTEND noninteractive
-# init locale settings
-#ENV LANGUAGE="en_US.UTF-8"
-#ENV LC_ALL="en_US.UTF-8"
-#ENV LC_TIME="en_US.UTF-8"
-#ENV LANG="en_US.UTF-8"
 
 # system libraries of general use
 # hadolint ignore=DL3008
@@ -112,6 +107,7 @@ RUN R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https:/
 RUN R -e "remotes::install_github(c('Rapporteket/rapbase@*release'))"
 RUN R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))"
 RUN touch ${CONFIG_PATH}/appLog.csv \
+    && touch ${CONFIG_PATH}/reportLog.csv \
     && chown rstudio:rstudio ${CONFIG_PATH}/* \
     && chmod ugo+rw ${CONFIG_PATH}/*
 # tinytex
