@@ -96,37 +96,36 @@ RUN touch /home/rstudio/.Renviron \
     && echo "DB_HOST=${DB_HOST}" >> /home/shiny/.Renviron \
     && echo "DB_USER=${DB_USER}" >> /home/shiny/.Renviron \
     && echo "DB_PASS=${DB_PASS}" >> /home/shiny/.Renviron \
-    && R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https://cloud.r-project.org/')" \
-    && R -e "remotes::install_github(c('Rapporteket/rapbase@*release'))" \
+    && R -e "install.packages(c('remotes', 'lifecycle', 'testthat', 'rapbase'), repos='https://cloud.r-project.org/')" \
     && R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))" \
     && touch ${CONFIG_PATH}/appLog.csv \
     && touch ${CONFIG_PATH}/reportLog.csv \
     && chown rstudio:rstudio ${CONFIG_PATH}/* \
     && chmod ugo+rw ${CONFIG_PATH}/* \
-    && su - rstudio bash -c 'R -e "tinytex::install_tinytex()"' \
-    && su - rstudio bash -c 'R -e \
-      "tinytex::tlmgr_install(c(\"hyphen-norwegian\",\
-                                \"collection-langeuropean\",\
-                                \"datetime\",\
-                                \"fmtcount\",\
-                                \"sectsty\",\
-                                \"marginnote\",\
-                                \"babel-norsk\",\
-                                \"lato\",\
-                                \"fontaxes\",\
-                                \"caption\",\
-                                \"fancyhdr\",\
-                                \"lastpage\",\
-                                \"textpos\",\
-                                \"titlesec\",\
-                                \"framed\",\
-                                \"ragged2e\",\
-                                \"ucs\",\
-                                \"subfig\",\
-                                \"eso-pic\",\
-                                \"grfext\",\
-                                \"oberdiek\",\
-                                \"pdfpages\",\
-                                \"pdflscape\"))"' \
-    && ln -s /home/rstudio/.TinyTeX /home/shiny/.TinyTeX
+    && tlmgr update --self --all \
+    && tlmgr install \
+      hyphen-norwegian \
+      collection-langeuropean \
+      datetime \
+      fmtcount \
+      sectsty \
+      marginnote \
+      microtype \
+      babel-norsk \
+      lato \
+      fontaxes \
+      caption \
+      fancyhdr \
+      lastpage \
+      textpos \
+      titlesec \
+      framed \
+      ragged2e \
+      ucs \
+      subfig \
+      eso-pic \
+      grfext \
+      oberdiek \
+      pdfpages \
+      pdflscape
 
