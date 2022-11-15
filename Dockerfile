@@ -127,5 +127,21 @@ RUN touch /home/rstudio/.Renviron \
       grfext \
       oberdiek \
       pdfpages \
-      pdflscape
-
+      pdflscape \
+      bigintcalc \
+      bitset \
+      etexcmds \
+      gettitlestring \
+      hycolor \
+      hyperref \
+      intcalc \
+      kvdefinekeys \
+      kvsetkeys \
+      letltxmacro \
+      ltxcmds \
+      pdfescape \
+      refcount \
+      rerunfilecheck \
+      stringenc \
+      uniquecounter \
+      zapfding
