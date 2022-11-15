@@ -144,4 +144,12 @@ RUN touch /home/rstudio/.Renviron \
       rerunfilecheck \
       stringenc \
       uniquecounter \
-      zapfding
+      zapfding \
+      float \
+      booktabs \
+      etoolbox \
+      amsmath \
+      latex-amsmath-dev \
+      xcolor \
+      geometry \
+      epstopdf-pkg
