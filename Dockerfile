@@ -73,8 +73,7 @@ ENV ROOT=TRUE
 ## for R v >= 4.0.0
 RUN /rocker_scripts/install_shiny_server.sh \
     && rm /srv/shiny-server/index.html \
-    && rm -rf /srv/shiny-server/sample-apps \
-    && usermod -a -G rstudio shiny
+    && rm -rf /srv/shiny-server/sample-apps
 
 ADD --chown=root:root rapShinyApps.tar.gz /srv/shiny-server/
 
