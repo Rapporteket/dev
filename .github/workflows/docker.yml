@@ -26,7 +26,7 @@ jobs:
           dockerfile: "Dockerfile"
       - name: Prepare tags
         id: docker_meta
-        uses: docker/metadata-action@v4.3.0
+        uses: docker/metadata-action@v4.4.0
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
