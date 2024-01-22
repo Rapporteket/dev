@@ -96,7 +96,8 @@ RUN touch /home/rstudio/.Renviron \
     && echo "DB_HOST=${DB_HOST}" >> /home/shiny/.Renviron \
     && echo "DB_USER=${DB_USER}" >> /home/shiny/.Renviron \
     && echo "DB_PASS=${DB_PASS}" >> /home/shiny/.Renviron \
-    && R -e "install.packages(c('remotes', 'lifecycle', 'testthat', 'rapbase'), repos='https://cloud.r-project.org/')" \
+    && R -e "install.packages(c('remotes', 'lifecycle', 'testthat'), repos='https://cloud.r-project.org/')" \
+    && R -e "remotes::install_github('rapporteket/rapbase@*release')"\
     && R -e "file.copy(system.file(c('dbConfig.yml', 'rapbaseConfig.yml', 'autoReport.yml'), package = 'rapbase'), Sys.getenv('R_RAP_CONFIG_PATH'))" \
     && touch ${CONFIG_PATH}/appLog.csv \
     && touch ${CONFIG_PATH}/reportLog.csv \
